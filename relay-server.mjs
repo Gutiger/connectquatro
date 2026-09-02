@@ -278,7 +278,9 @@ export function createRelayServer({ port = 8080, host = "127.0.0.1" } = {}) {
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const port = Number(process.env.PORT ?? 8080);
-  const host = process.env.HOST ?? "127.0.0.1";
+  // Render requires public web services to bind on every network interface.
+  // Local tests pass an explicit 127.0.0.1 host and remain loopback-only.
+  const host = process.env.HOST ?? "0.0.0.0";
   const relay = createRelayServer({ port, host });
   const address = await relay.listen();
   console.log(`Connect4 relay listening on ws://${address.address}:${address.port}/connect4`);
